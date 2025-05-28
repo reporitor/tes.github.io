@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Jual Beli Akun Game</title>
+  <style>
+    /* Style sederhana */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0; padding: 0;
+      background: #f0f0f0;
+    }
+    header {
+      background: #222;
+      color: white;
+      padding: 10px 20px;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    header h1 {
+      margin: 0; font-size: 24px;
+    }
+    nav button {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 16px;
+      margin-left: 15px;
+      cursor: pointer;
+      padding: 5px 10px;
+    }
+    nav button.active {
+      border-bottom: 2px solid #f44336;
+    }
+    main {
+      padding: 20px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    /* Sections hidden by default */
+    section {
+      display: none;
+    }
+    section.active {
+      display: block;
+    }
+    /* Account card */
+    .account-card {
+      background: white;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      margin-bottom: 15px;
+      display: flex;
+      border-radius: 6px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: box-shadow 0.3s;
+    }
+    .account-card:hover {
+      box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+    }
+    .account-card img {
+      width: 120px;
+      object-fit: cover;
+    }
+    .account-info {
+      padding: 15px;
+      flex-grow: 1;
+    }
+    .account-info h3 {
+      margin-top: 0;
+      margin-bottom: 8px;
+    }
+    .price {
+      color: #f44336;
+      font-weight: bold;
+      margin-top: 10px;
+    }
+    .btn-buy {
+      background: #f44336;
+      border: none;
+      color: white;
+      padding: 10px 15px;
+      cursor: pointer;
+      font-weight: bold;
+      border-radius: 0 6px 6px 0;
+      align-self: center;
+      margin-right: 10px;
+      transition: background-color 0.3s;
+    }
+    .btn-buy:hover {
+      background: #d32f2f;
+    }
+    /* Detail page */
+    #detail img {
+      max-width: 100%;
+      border-radius: 8px;
+      margin-bottom: 15px;
+    }
+    #detail h2 {
+      margin-top: 0;
+    }
+    #detail p {
+      margin: 5px 0;
+    }
+    #confirm-buy-btn, #back-to-home {
+      padding: 10px 15px;
+      margin-right: 10px;
+      cursor: pointer;
+      border: none;
+      border-radius: 5px;
+      font-weight: bold;
+    }
+    #confirm-buy-btn {
+      background: #4caf50;
+      color: white;
+    }
+    #confirm-buy-btn:hover {
+      background: #388e3c;
+    }
+    #back-to-home {
+      background: #bbb;
+    }
+    #back-to-home:hover {
+      background: #999;
+    }
+    /* Cart */
+    #cart-list {
+      margin-bottom: 20px;
+    }
+    .cart-item {
+      display: flex;
+      background: white;
+      padding: 10px;
+      border-radius: 6px;
+      margin-bottom: 10px;
+      align-items: center;
+    }
+    .cart-item img {
+      width: 80px;
+      border-radius: 6px;
+      margin-right: 15px;
+      object-fit: cover;
+    }
+    .cart-item-info {
+      flex-grow: 1;
+    }
+    .cart-item-price {
+      font-weight: bold;
+      color: #f44336;
+      min-width: 120px;
+      text-align: right;
+    }
+    #cart-total {
+      font-weight: bold;
+      font-size: 18px;
+      margin-bottom: 15px;
+    }
+    #checkout-btn {
+      padding: 12px 20px;
+      background: #f44336;
+      color: white;
+      border: none;
+      font-weight: bold;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    #checkout-btn:hover {
+      background: #d32f2f;
+    }
+    /* Login/Register form */
+    form {
+      background: white;
+      padding: 20px;
+      max-width: 400px;
+      margin: 0 auto;
+      border-radius: 8px;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+    }
+    form input {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 16px;
+    }
+    form button {
+      width: 100%;
+      padding: 12px;
+      background: #f44336;
+      border: none;
+      color: white;
+      font-weight: bold;
+      font-size: 16px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    form button:hover {
+      background: #d32f2f;
+    }
+    .form-toggle {
+      text-align: center;
+      margin-top: 10px;
+    }
+    .form-toggle a {
+      color: #f44336;
+      cursor: pointer;
+      text-decoration: none;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Jual Beli Akun Game</h1>
+    <nav>
+      <button id="nav-home" class="active">Home</button>
+      <button id="nav-cart">Keranjang</button>
+      <button id="nav-login">Login / Register</button>
+    </nav>
+  </header>
+
+  <main>
+    <!-- Home Section -->
+    <section id="home" class="active">
+      <div id="account-list"></div>
+    </section>
+
+    <!-- Detail Section -->
+    <section id="detail">
+      <button id="back-to-home">Kembali</button>
+      <img id="detail-img" src="" alt="Gambar akun" />
+      <h2 id="detail-name"></h2>
+      <p><strong>Game:</strong> <span id="detail-game"></span></p>
+      <p><strong>Level:</strong> <span id="detail-level"></span></p>
+      <p id="detail-desc"></p>
+      <p><strong>Skin:</strong> <span id="detail-skin"></span></p>
+      <p><strong>Harga:</strong> <span id="detail-price"></span></p>
+      <button id="confirm-buy-btn">Beli Sekarang</button>
+    </section>
+
+    <!-- Login/Register Section -->
+    <section id="login-register">
+      <form id="login">
+        <h2>Login</h2>
+        <input type="text" id="login-username" placeholder="Username" required />
+        <input type="password" id="login-password" placeholder="Password" required />
+        <button type="submit">Login</button>
+        <div class="form-toggle">
+          Belum punya akun? <a id="show-register">Daftar di sini</a>
+        </div>
+      </form>
+
+      <form id="register" style="display:none;">
+        <h2>Register</h2>
+        <input type="text" id="reg-username" placeholder="Username" required />
+        <input type="password" id="reg-password" placeholder="Password" required />
+        <button type="submit">Daftar</button>
+        <div class="form-toggle">
+          Sudah punya akun? <a id="show-login">Login di sini</a>
+        </div>
+      </form>
+    </section>
+
+    <!-- Cart Section -->
+    <section id="cart">
+      <h1>Keranjang Belanja</h1>
+      <div id="cart-list"></div>
+      <div id="cart-total"></div>
+      <button id="checkout-btn">Checkout</button>
+    </section>
+  </main>
+
+  <script>
+    // ======= DATA AKUN GAME =======
+    const accounts = [
+      {
+        id: 1,
+        name: "ProGamer123",
+        game: "Mobile Legends",
+        level: "Level 50 - Epic",
+        desc: "Akun dengan skin langka dan hero lengkap.",
+        skin: "Skin Mythic dan Legend",
+        price: 500000,
+        img: "https://images.unsplash.com/photo-1605902711622-cfb43c443f9f?auto=format&fit=crop&w=400&q=80"
+      },
+      {
+        id: 2,
+        name: "EpicSniper",
+        game: "PUBG Mobile",
+        level: "Level 70 - Ace",
+        desc: "Akun berprestasi dengan banyak skin senjata keren.",
+        skin: "Skin Kar98, M416 Limited",
+        price: 750000,
+        img: "https://images.unsplash.com/photo-1515377905703-c4788e51af15?auto=format&fit=crop&w=400&q=80"
+      },
+      {
+        id: 3,
+        name: "DragonSlayer",
+        game: "Free Fire",
+        level: "Level 65 - Diamond",
+        desc: "Akun diamond dengan koleksi skin terbanyak.",
+        skin: "Skin Bundle Eksklusif",
+        price: 600000,
+        img: "https://images.unsplash.com/photo-1533841066550-3b2bdb4d3b5a?auto=format&fit=crop&w=400&q=80"
+      },
+      {
+        id: 4,
+        name: "SpeedKing",
+        game: "Call of Duty Mobile",
+        level: "Level 55 - Veteran",
+        desc: "Akun penuh dengan emblem dan prestasi tinggi.",
+        skin: "Skin Senjata Epic",
+        price: 450000,
+        img: "https://images.unsplash.com/photo-1558981403-c3a2d43c797b?auto=format&fit=crop&w=400&q=80"
+      }
+    ];
+
+    // ======= VARIABEL GLOBAL =======
+    let currentUser = null; // Simulasi user login
+    let cart = [];          // Keranjang belanja berisi akun
+
+    // ======= PILIHAN HALAMAN =======
+    const sections = {
+      home: document.getElementById('home'),
+      detail: document.getElementById('detail'),
+      loginRegister: document.getElementById('login-register'),
+      cart: document.getElementById('cart')
+    };
+
+    // Navbar buttons
+    const navHome = document.getElementById('nav-home');
+    const navCart = document.getElementById('nav-cart');
+    const navLogin = document.getElementById('nav-login');
+
+    // Detail elements
+    const detailImg = document.getElementById('detail-img');
+    const detailName = document.getElementById('detail-name');
+    const detailGame = document.getElementById('detail-game');
+    const detailLevel = document.getElementById('detail-level');
+    const detailDesc = document.getElementById('detail-desc');
+    const detailSkin = document.getElementById('detail-skin');
+    const detailPrice = document.getElementById('detail-price');
+    const confirmBuyBtn = document.getElementById('confirm-buy-btn');
+    const backToHomeBtn = document.getElementById('back-to-home');
+
+    // Cart elements
+    const cartList = document.getElementById('cart-list');
+    const cartTotal = document.getElementById('cart-total');
+    const checkoutBtn = document.getElementById('checkout-btn');
+
+    // Login/Register forms and toggles
+    const loginForm = document.getElementById('login');
+    const registerForm = document.getElementById('register');
+    const showRegisterLink = document.getElementById('show-register');
+    const showLoginLink = document.getElementById('show-login');
+
+    // Current account shown on detail
+    let currentDetailAccount = null;
+
+    // ======= FUNGSI UTAMA =======
+
+    // Fungsi untuk tampilkan halaman dan sembunyikan halaman lain
+    function showSection(sectionName) {
+      for (const key in sections) {
+        if (sections.hasOwnProperty(key)) {
+          sections[key].classList.remove('active');
+        }
+      }
+      sections[sectionName].classList.add('active');
+
+      // Set navbar active
+      navHome.classList.remove('active');
+      navCart.classList.remove('active');
+      navLogin.classList.remove('active');
+      if (sectionName === 'home') navHome.classList.add('active');
+      if (sectionName === 'cart') navCart.classList.add('active');
+      if (sectionName === 'loginRegister') navLogin.classList.add('active');
+    }
+
+    // Fungsi render daftar akun di halaman home
+    function renderAccountList() {
+      const container = document.getElementById('account-list');
+      container.innerHTML = '';
+      accounts.forEach(acc => {
+        const card = document.createElement('div');
+        card.className = 'account-card';
+
+        card.innerHTML = `
+          <img src="${acc.img}" alt="Preview ${acc.name}" />
+          <div class="account-info">
+            <h3>${acc.name}</h3>
+            <p><strong>Game:</strong> ${acc.game}</p>
+            <p><strong>Level:</strong> ${acc.level}</p>
+            <p class="price">Rp ${acc.price.toLocaleString('id-ID')}</p>
+          </div>
+          <button class="btn-buy" data-id="${acc.id}">Beli</button>
+        `;
+
+        container.appendChild(card);
+      });
+
+      // Tambahkan event listener ke semua tombol Beli
+      document.querySelectorAll('.btn-buy').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const id = Number(e.target.dataset.id);
+          openDetail(id);
+        });
+      });
+    }
+
+    // Fungsi membuka halaman detail akun
+    function openDetail(accountId) {
+      const acc = accounts.find(a => a.id === accountId);
+      if (!acc) return alert('Akun tidak ditemukan.');
+
+      currentDetailAccount = acc;
+      detailImg.src = acc.img;
+      detailName.textContent = acc.name;
+      detailGame.textContent = acc.game;
+      detailLevel.textContent = acc.level;
+      detailDesc.textContent = acc.desc;
+      detailSkin.textContent = acc.skin;
+      detailPrice.textContent = `Rp ${acc.price.toLocaleString('id-ID')}`;
+
+      showSection('detail');
+    }
+
+    // Fungsi menambah akun ke keranjang
+    function addToCart(account) {
+      if (!currentUser) {
+        alert('Silakan login terlebih dahulu untuk membeli.');
+        showSection('loginRegister');
+        return;
+      }
+
+      if (cart.find(item => item.id === account.id)) {
+        alert('Akun sudah ada di keranjang.');
+        return;
+      }
+
+      cart.push(account);
+      alert(`"${account.name}" berhasil ditambahkan ke keranjang.`);
+    }
+
+    // Fungsi render keranjang
+    function renderCart() {
+      cartList.innerHTML = '';
+      if (cart.length === 0) {
+        cartList.innerHTML = '<p>Keranjang kosong.</p>';
+        cartTotal.textContent = '';
+        checkoutBtn.style.display = 'none';
+        return;
+      }
+
+      checkoutBtn.style.display = 'inline-block';
+
+      let total = 0;
+      cart.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'cart-item';
+        div.innerHTML = `
+          <img src="${item.img}" alt="${item.name}" />
+          <div class="cart-item-info">
+            <h4>${item.name}</h4>
+            <p>${item.game} - ${item.level}</p>
+          </div>
+          <div class="cart-item-price">Rp ${item.price.toLocaleString('id-ID')}</div>
+        `;
+        cartList.appendChild(div);
+        total += item.price;
+      });
+
+      cartTotal.textContent = `Total Harga: Rp ${total.toLocaleString('id-ID')}`;
+    }
+
+    // Fungsi logout
+    function logoutUser() {
+      if (confirm('Yakin ingin logout?')) {
+        currentUser = null;
+        cart = [];
+        updateNavForUser();
+        showSection('home');
+      }
+    }
+
+    // Update navbar login/logout text
+    function updateNavForUser() {
+      if (currentUser) {
+        navLogin.textContent = `Logout (${currentUser.username})`;
+        navLogin.style.color = '#f44336';
+        navLogin.removeEventListener('click', openLoginSection);
+        navLogin.addEventListener('click', logoutUser);
+      } else {
+        navLogin.textContent = 'Login / Register';
+        navLogin.style.color = '#fff';
+        navLogin.removeEventListener('click', logoutUser);
+        navLogin.addEventListener('click', openLoginSection);
+      }
+    }
+
+    // Fungsi buka halaman login/register
+    function openLoginSection() {
+      showSection('loginRegister');
+    }
+
+    // ======= EVENT HANDLER =======
+
+    navHome.addEventListener('click', () => showSection('home'));
+    navCart.addEventListener('click', () => {
+      if (!currentUser) {
+        alert('Silakan login terlebih dahulu untuk melihat keranjang.');
+        showSection('loginRegister');
+      } else {
+        renderCart();
+        showSection('cart');
+      }
+    });
+
+    backToHomeBtn.addEventListener('click', () => {
+      showSection('home');
+    });
+
+    confirmBuyBtn.addEventListener('click', () => {
+      if (currentDetailAccount) {
+        addToCart(currentDetailAccount);
+      }
+    });
+
+    checkoutBtn.addEventListener('click', () => {
+      if (cart.length === 0) {
+        alert('Keranjang kosong.');
+        return;
+      }
+      alert(`Checkout berhasil! Total pembayaran Rp ${cart.reduce((a,b) => a+b.price, 0).toLocaleString('id-ID')}`);
+      cart = [];
+      renderCart();
+      showSection('home');
+    });
+
+    // Toggle login/register form
+    showRegisterLink.addEventListener('click', () => {
+      loginForm.style.display = 'none';
+      registerForm.style.display = 'block';
+    });
+    showLoginLink.addEventListener('click', () => {
+      registerForm.style.display = 'none';
+      loginForm.style.display = 'block';
+    });
+
+    // Login form submit
+    loginForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const username = document.getElementById('login-username').value.trim();
+      const password = document.getElementById('login-password').value.trim();
+      // Simulasi cek user (dalam nyata pakai database)
+      if (username === '' || password === '') {
+        alert('Harap isi username dan password.');
+        return;
+      }
+      // Simulasi login sukses tanpa database
+      currentUser = { username };
+      alert(`Login berhasil. Selamat datang, ${username}!`);
+      updateNavForUser();
+      showSection('home');
+      loginForm.reset();
+    });
+
+    // Register form submit
+    registerForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const username = document.getElementById('reg-username').value.trim();
+      const password = document.getElementById('reg-password').value.trim();
+      if (username === '' || password === '') {
+        alert('Harap isi username dan password.');
+        return;
+      }
+      // Simulasi register sukses langsung login
+      currentUser = { username };
+      alert(`Registrasi berhasil. Anda login sebagai ${username}.`);
+      updateNavForUser();
+      showSection('home');
+      registerForm.reset();
+    });
+
+    // Inisialisasi awal
+    function init() {
+      renderAccountList();
+      showSection('home');
+      updateNavForUser();
+    }
+
+    window.onload = init;
+  </script>
+</body>
+</html>
